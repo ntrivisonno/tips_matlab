@@ -1,0 +1,318 @@
+* funciones
+  clear all;close all;clc
+** handle function
+   es un puntero a una funcion, se usa para pasar una funcion como argumento de otra funcion. se usa para optimizar. 
+   ej:
+***  alternativa
+     f = @(x) x.^2   % hacerla tipo inline
+***  alternativa
+     function y = computeSquare(x)
+     y = x.^2;
+     end
+     %(en el main) Create a handle and call the function to compute the square of four.
+     
+     f = @computeSquare;
+     a = 4;
+     b = f(a)
+** quiver3
+   % plotea vectores en 3D, 
+   example
+   [x, y, z] = peaks (25);
+   surf (x, y, z);
+   hold on;
+   [u, v, w] = surfnorm (x, y, z / 10);
+   h = quiver3 (x, y, z, u, v, w);
+   set (h, "maxheadsize", 0.33);
+** quiver
+   % plotea vectores en 2D
+   quiver(x1(1),x1(2),x12_new(1),x12_new(2),0,'m*')
+   % hay que poner 0 para que no escale el vector
+   % example:
+   [x, y] = meshgrid (1:2:20);
+   h = quiver (x, y, sin (2*pi*x/10), sin (2*pi*y/10));
+   set (h, "maxheadsize", 0.33);
+   
+** surfnorm
+   %Find the vectors normal to a meshgridded surface. The meshed 
+   gridded surface is defined by X, Y, and Z.
+
+   %example
+   figure()
+   [X,Y] = meshgrid(-2:.2:2);
+   Z = X.*exp((-X.^2 - Y.^2));
+   [U,V,W] = surfnorm(X,Y,Z);  % importante !!
+   quiver3(X,Y,Z,U,V,W,0.5);
+   hold on
+   surf(X,Y,Z);
+   colormap hsv
+   view(-35,45)
+   axis ([-2 2 -1 1 -.6 .6])
+   hold off
+** pause
+   suspend the executin of the program for N seconds
+   pause(0.01)
+** gradient
+   Calculate the gradient of sampled data or a function.  If M is a
+   vector, calculate the one-dimensional gradient of M.
+   [DX, DY] = gradient (M)' calculates the one dimensional gradient
+   for X and Y direction if M is a matrix
+   example
+   [X,Y] = meshgrid(-2:.2:2);
+   Z = X.*exp((-X.^2 - Y.^2));
+   [DX,DY] = gradient(Z,.2,.2);
+   figure();contourf(X,Y,Z);hold on;quiver(X,Y,DX,DY);colormap jet
+   figure();contour(X,Y,Z);hold on;quiver(X,Y,DX,DY);colormap jet
+   hold on
+   quiver(X,Y,DX,DY)
+   grid off
+   hold off
+  
+** symrc
+   Return the symmetric reverse Cuthill-McKee permutation of S.  P is
+   a permutation vector such that 'S(P, P)' tends to have its diagonal
+   elements closer to the diagonal than S.  This is a good preordering
+   for LU or Cholesky factorization of matrices that come from "long,
+   skinny" problems
+   
+** syms
+   symbolic, see algo how to change from symbolic to matlab expression
+*** diff
+    deriva funcion
+    d_phi1=diff(phi1,x);    %d_phi1/dx
+*** int
+    integra fiuncion, tanto definida como indefinida
+**** integral indef en funcion de x
+     A11 = int(phi1,x)
+**** integral definida
+     A11 = int(phi1*phi1,0,2*h);
+**** integrales por parte
+     syms u(x) v(x)
+     F = int(u*diff(v))
+     g = integrateByParts(F,diff(u))
+
+     link -> https://www.mathworks.com/help/symbolic/integratebyparts.html
+     
+*** pretty 
+    visualiza mejor la ecuaci'on
+    pretty(A)
+*** subs
+    substituye valores
+    ej:
+    phi1=subs(subs(subs(phi1,x1,0),x2,h),x3,0);     % phi1
+    % no es necesario hacer uno x uno, se le puede pasar una celda de los valores a substituir
+
+    A = [1 x1 y1 x1^2 x1*y1 y1^2;
+         1 x2 y2 x2^2 x2*y2 y2^2;
+	 1 x3 y3 x3^2 x3*y3 y3^2;
+	 1 x4 y4 x4^2 x4*y4 y4^2;
+	 1 x5 y5 x5^2 x5*y5 y5^2;
+	 1 x6 y6 x6^2 x6*y6 y6^2];
+	 
+     % matrix evaluada en los nodos del triangulo master
+     ANum = subs(A,{x1,y1,x2,y2,x3,y3,x4,y4,x5,y5,x6,y6},{0,0,1,0,0,1,0.5,0,0.5,0.5,0,0.5})
+    
+*** simplify
+    simplifica ecuacion
+    phi3=simplify(phi3);
+*** factor
+    factoriza una expresion en symbolic
+    factor(ANum(1)) factoriza en simbolico
+*** solve
+    resuelve eq p simbolico
+*** matlabFunction
+    pasa de simbolico a handle funcion, es decir a partir de una funcion
+    simbolica, hace un puntero la funcion y desp se maneja como puntero a funcion
+**** ej 
+    syms h
+    A_sym = [h;1/h;h^2]
+    f = matlabFunction(A_sym);
+    dx = 0.5;
+    A = f(dx)
+    whos A_sym
+    whos A
+** fprintf
+*** fprintf
+    Utilice fprintf para mostrar directamente el texto sin crear una 
+    variable. Sin embargo, para finalizar la visualización correctamente,
+    debe finalizar el texto con el metacarácter de nueva línea (\n).
+
+    name = 'Alice';   
+    age = 12;
+    fprintf('%s will be %d this year.\n',name,age); 
+    Alice will be 12 this year.
+
+    %s= string | %d = entero 
+
+*** sprintf
+    Utilice sprintf para crear texto pero se muestra con disp.
+    
+    name = 'Alice';   
+    age = 12;
+    X = sprintf('%s will be %d this year.',name,age);
+    disp(X)
+    Alice will be 12 this year.
+** data manipulation - external wrinting/reading
+   https://es.mathworks.com/help/matlab/matlab_external/writing-and-reading-data.html
+*** escribir datos
+    completar
+*** leer datos
+    fgetl -> Leer una línea de texto desde el dispositivo y descartar el terminador
+    fgets -> Lea una línea de texto del dispositivo e incluya el terminador
+    fread -> Leer datos binarios del dispositivo
+    fscanf -> Leer datos del dispositivo y formatear como texto
+    readasync -> Leer datos asincrónicamente desde el dispositivo
+    stopasync -> Detenga las operaciones asincrónicas de lectura y escritura
+** magic() 
+   es una logica que no se repite y la suma de las filas y col 
+   es la misma
+
+** spy
+   te grafica los elem no nulos de la matriz de la matriz
+   spy(A)
+** nnz 
+   te da la cant de los elem no ceros de la matrix
+   nnz(S)
+** whos
+   para saber cuanto ocupa en memoria y adem'as que tipo de variable es
+   k=zeros(3)
+   whos k
+
+** eye
+   crea matrix identidad
+   I=eye(3)
+** linspace
+   genera una sucecion entre x0 y xf de N ptos
+   p=linspace(0,1,10)
+** mesgrid
+   genera una malla apartir de dos vectores
+   x=linespace(-1,1,20)
+   [X,Y]meshgrid(x,x)
+** linsolve
+   resuelve un sistema lineal A*x = b -> x = A\b
+   si no se aclara nada, octave recorre la matriz y optimiza la inv, 
+   sino con OPTS, se le indica el tipo de matriz y optimiza la inversa
+   R = # de condicion de A
+
+   OPTS: 
+   LT  ->  A is lower triangular
+   UT  ->  A is upper triangular
+   SYM ->   A is symmetric or complex Hermitian (currently makes no
+   difference)
+   UHESS  -> A is upper Hessenberg (currently makes no difference)
+   POSDEF -> A is positive definite
+   RECT   -> A is general rectangular (currently makes no difference)
+   TRANSA -> Solve 'A'*x = b' by 'transpose (A) \ b'
+
+   [X, R] = linsolve (A, b, OPTS)
+
+** textscan 
+   textscan.m es una funcion para scannear donde le seteo q son los
+   comentarios, etc. 
+   fscan.m esa es la standar de matlab
+** matriz sparse
+   full(k) % me genera una matriz full a partir de una sparse
+** matrix_type
+** figure
+   figure('Name','Aca seteamos el nombre')
+   surf(X,Y,Z)
+   xlabel('x');ylabel('y');zlabel('z=x^2/a^2 - y^2/b^2');
+   xlim([-500 500])
+   colormap(jet(20))  %hay diferentes gamas de colores (winter,summer,jet,etc)
+   y el '20' representa cuantos bloques de colores quiero
+   shading interp %es para sacar las lineas negras
+   colorbar %agrega una escala para saber que numero representa cada color
+
+   contour(X,Y,z) % lineas de nivel
+   contourf(X,Y,z) % superficies de nivel
+   
+   surfc(X,Y,z) %Surfc es una funcion que convina surf con contour, es decir
+   te grafica la superficie y abajo las lineas a nivel
+*** exemples de lo anterior
+**** mesh
+     x= linspace(-3*pi, 3*pi, 50);
+     y= linspace(-2*pi, 4*pi, 60);
+     
+     [X, Y] = meshgrid(x,y); %con esto me genero la grilla, es decir, donde será evaluada mi funcion
+     
+     z= sin(X).*cos(Y);
+     
+     figure
+     mesh(X,Y,z)
+     xlabel('x')
+     ylabel('y')
+     zlabel('z=sen(x)*cos(y)')
+     view([23 57])
+     grid on
+     colorbar
+     colormap(jet(20))
+**** surf
+     x= linspace(-3*pi, 3*pi, 50);
+     y= linspace(-2*pi, 4*pi, 60);
+     [X, Y] = meshgrid(x,y);
+     
+     z= sin(X).*cos(Y);
+     
+     figure
+     surf(X,Y,z)
+     xlabel('x')
+     ylabel('y')
+     zlabel('z=sen(x)*cos(y)')
+     grid on
+     view([23 57])
+     shading interp %es para sacar las lineas negras
+     colormap(jet(10))
+     colorbar
+**** contour
+     x= linspace(-3*pi, 3*pi, 50);
+     y= linspace(-2*pi, 4*pi, 60);
+     [X, Y] = meshgrid(x,y);
+     z= sin(X).*cos(Y);   
+     figure
+     subplot(2, 1, 1)
+     contour(X,Y,z)
+     xlabel('x')
+     ylabel('y')
+     zlabel('z=sen(x)*cos(y)')
+     grid on
+     colormap jet
+     colorbar
+     
+     subplot(2,1,2)
+     contourf(X,Y,z)
+     xlabel('x')
+     ylabel('y')
+     zlabel('z=sen(x)*cos(y)')
+     grid on
+     colormap jet
+     colorbar
+**** surfc
+     x= linspace(-3*pi, 3*pi, 50);
+     y= linspace(-2*pi, 4*pi, 60);
+     [X, Y] = meshgrid(x,y);
+     z= sin(X).*cos(Y);
+     figure
+     surfc(X,Y,z)
+     xlabel('x')
+     ylabel('y')
+     zlabel('z=sen(x)*cos(y)')
+     grid on
+     view([23 57])
+     shading interp %es para sacar las lineas negras
+     colormap(jet(10)) %hay diferentes gamas de colores (winter, summer, jet, etc) y el '10' representa cuantos bloques de colores quiero
+     colorbar
+     
+** fprint o disp
+   para poner numeros y strings
+   e = 3;
+   p=num2str(e);
+   disp(['funcion base',p,'seg'])
+** eps
+   eps -> num a partir del cual empieza a tener en cuenta. El eps
+   depende del numero al rededor del cual estamos
+   1+(eps(1)) = 1.000000000000002
+   1+(eps(1)/10) = 1 no tiene en cuenta el incremento
+
+* prog
+** ah
+   od
+** o
