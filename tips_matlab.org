@@ -1,156 +1,6 @@
 * funciones
   clear all;close all;clc
-** handle function
-   es un puntero a una funcion, se usa para pasar una funcion como argumento de otra funcion. se usa para optimizar. 
-   ej:
-***  alternativa
-     f = @(x) x.^2   % hacerla tipo inline
-***  alternativa
-     function y = computeSquare(x)
-     y = x.^2;
-     end
-     %(en el main) Create a handle and call the function to compute the square of four.
-     
-     f = @computeSquare;
-     a = 4;
-     b = f(a)
-** quiver3
-   % plotea vectores en 3D, 
-   example
-   [x, y, z] = peaks (25);
-   surf (x, y, z);
-   hold on;
-   [u, v, w] = surfnorm (x, y, z / 10);
-   h = quiver3 (x, y, z, u, v, w);
-   set (h, "maxheadsize", 0.33);
-** quiver
-   % plotea vectores en 2D
-   quiver(x1(1),x1(2),x12_new(1),x12_new(2),0,'m*')
-   % hay que poner 0 para que no escale el vector
-   % example:
-   [x, y] = meshgrid (1:2:20);
-   h = quiver (x, y, sin (2*pi*x/10), sin (2*pi*y/10));
-   set (h, "maxheadsize", 0.33);
-   
-** surfnorm
-   %Find the vectors normal to a meshgridded surface. The meshed 
-   gridded surface is defined by X, Y, and Z.
 
-   %example
-   figure()
-   [X,Y] = meshgrid(-2:.2:2);
-   Z = X.*exp((-X.^2 - Y.^2));
-   [U,V,W] = surfnorm(X,Y,Z);  % importante !!
-   quiver3(X,Y,Z,U,V,W,0.5);
-   hold on
-   surf(X,Y,Z);
-   colormap hsv
-   view(-35,45)
-   axis ([-2 2 -1 1 -.6 .6])
-   hold off
-** pause
-   suspend the executin of the program for N seconds
-   pause(0.01)
-** gradient
-   Calculate the gradient of sampled data or a function.  If M is a
-   vector, calculate the one-dimensional gradient of M.
-   [DX, DY] = gradient (M)' calculates the one dimensional gradient
-   for X and Y direction if M is a matrix
-   example
-   [X,Y] = meshgrid(-2:.2:2);
-   Z = X.*exp((-X.^2 - Y.^2));
-   [DX,DY] = gradient(Z,.2,.2);
-   figure();contourf(X,Y,Z);hold on;quiver(X,Y,DX,DY);colormap jet
-   figure();contour(X,Y,Z);hold on;quiver(X,Y,DX,DY);colormap jet
-   hold on
-   quiver(X,Y,DX,DY)
-   grid off
-   hold off
-  
-** symrc
-   Return the symmetric reverse Cuthill-McKee permutation of S.  P is
-   a permutation vector such that 'S(P, P)' tends to have its diagonal
-   elements closer to the diagonal than S.  This is a good preordering
-   for LU or Cholesky factorization of matrices that come from "long,
-   skinny" problems
-   
-** syms
-   symbolic, see algo how to change from symbolic to matlab expression
-*** diff
-    deriva funcion
-    d_phi1=diff(phi1,x);    %d_phi1/dx
-*** int
-    integra fiuncion, tanto definida como indefinida
-**** integral indef en funcion de x
-     A11 = int(phi1,x)
-**** integral definida
-     A11 = int(phi1*phi1,0,2*h);
-**** integrales por parte
-     syms u(x) v(x)
-     F = int(u*diff(v))
-     g = integrateByParts(F,diff(u))
-
-     link -> https://www.mathworks.com/help/symbolic/integratebyparts.html
-     
-*** pretty 
-    visualiza mejor la ecuaci'on
-    pretty(A)
-*** subs
-    substituye valores
-    ej:
-    phi1=subs(subs(subs(phi1,x1,0),x2,h),x3,0);     % phi1
-    % no es necesario hacer uno x uno, se le puede pasar una celda de los valores a substituir
-
-    A = [1 x1 y1 x1^2 x1*y1 y1^2;
-         1 x2 y2 x2^2 x2*y2 y2^2;
-	 1 x3 y3 x3^2 x3*y3 y3^2;
-	 1 x4 y4 x4^2 x4*y4 y4^2;
-	 1 x5 y5 x5^2 x5*y5 y5^2;
-	 1 x6 y6 x6^2 x6*y6 y6^2];
-	 
-     % matrix evaluada en los nodos del triangulo master
-     ANum = subs(A,{x1,y1,x2,y2,x3,y3,x4,y4,x5,y5,x6,y6},{0,0,1,0,0,1,0.5,0,0.5,0.5,0,0.5})
-    
-*** simplify
-    simplifica ecuacion
-    phi3=simplify(phi3);
-*** factor
-    factoriza una expresion en symbolic
-    factor(ANum(1)) factoriza en simbolico
-*** solve
-    resuelve eq p simbolico
-*** matlabFunction
-    pasa de simbolico a handle funcion, es decir a partir de una funcion
-    simbolica, hace un puntero la funcion y desp se maneja como puntero a funcion
-**** ej 
-    syms h
-    A_sym = [h;1/h;h^2]
-    f = matlabFunction(A_sym);
-    dx = 0.5;
-    A = f(dx)
-    whos A_sym
-    whos A
-** fprintf
-*** fprintf
-    Utilice fprintf para mostrar directamente el texto sin crear una 
-    variable. Sin embargo, para finalizar la visualización correctamente,
-    debe finalizar el texto con el metacarácter de nueva línea (\n).
-
-    name = 'Alice';   
-    age = 12;
-    fprintf('%s will be %d this year.\n',name,age); 
-    Alice will be 12 this year.
-
-    %s= string | %d = entero 
-
-*** sprintf
-    Utilice sprintf para crear texto pero se muestra con disp.
-    
-    name = 'Alice';   
-    age = 12;
-    X = sprintf('%s will be %d this year.',name,age);
-    disp(X)
-    Alice will be 12 this year.
 ** data manipulation - external wrinting/reading
    https://es.mathworks.com/help/matlab/matlab_external/writing-and-reading-data.html
 *** escribir datos
@@ -162,56 +12,23 @@
     fscanf -> Leer datos del dispositivo y formatear como texto
     readasync -> Leer datos asincrónicamente desde el dispositivo
     stopasync -> Detenga las operaciones asincrónicas de lectura y escritura
-** magic() 
-   es una logica que no se repite y la suma de las filas y col 
-   es la misma
-
-** spy
-   te grafica los elem no nulos de la matriz de la matriz
-   spy(A)
-** nnz 
-   te da la cant de los elem no ceros de la matrix
-   nnz(S)
-** whos
-   para saber cuanto ocupa en memoria y adem'as que tipo de variable es
-   k=zeros(3)
-   whos k
+    textscan -> funcion para scannear donde le seteo q son los comentarios, etc. 
+**** textscan 
+   textscan.m es una funcion para scannear donde le seteo q son los
+   comentarios, etc. 
+   fscan.m esa es la standar de matlab
+   A  = textscan(fid,['%f',repmat(' %f',1,3)],numnp,'CommentStyle','$',...
+   'CollectOutPut',true);
+   A  = A{1};
+** eps
+   eps -> num a partir del cual empieza a tener en cuenta. El eps
+   depende del numero alrededor del cual estamos
+   1+(eps(1)) = 1.000000000000002
+   1+(eps(1)/10) = 1 no tiene en cuenta el incremento
 
 ** eye
    crea matrix identidad
    I=eye(3)
-** linspace
-   genera una sucecion entre x0 y xf de N ptos
-   p=linspace(0,1,10)
-** mesgrid
-   genera una malla apartir de dos vectores
-   x=linespace(-1,1,20)
-   [X,Y]meshgrid(x,x)
-** linsolve
-   resuelve un sistema lineal A*x = b -> x = A\b
-   si no se aclara nada, octave recorre la matriz y optimiza la inv, 
-   sino con OPTS, se le indica el tipo de matriz y optimiza la inversa
-   R = # de condicion de A
-
-   OPTS: 
-   LT  ->  A is lower triangular
-   UT  ->  A is upper triangular
-   SYM ->   A is symmetric or complex Hermitian (currently makes no
-   difference)
-   UHESS  -> A is upper Hessenberg (currently makes no difference)
-   POSDEF -> A is positive definite
-   RECT   -> A is general rectangular (currently makes no difference)
-   TRANSA -> Solve 'A'*x = b' by 'transpose (A) \ b'
-
-   [X, R] = linsolve (A, b, OPTS)
-
-** textscan 
-   textscan.m es una funcion para scannear donde le seteo q son los
-   comentarios, etc. 
-   fscan.m esa es la standar de matlab
-** matriz sparse
-   full(k) % me genera una matriz full a partir de una sparse
-** matrix_type
 ** figure
    figure('Name','Aca seteamos el nombre')
    surf(X,Y,Z)
@@ -301,16 +118,402 @@
      colormap(jet(10)) %hay diferentes gamas de colores (winter, summer, jet, etc) y el '10' representa cuantos bloques de colores quiero
      colorbar
      
-** fprint o disp
-   para poner numeros y strings
-   e = 3;
-   p=num2str(e);
-   disp(['funcion base',p,'seg'])
-** eps
-   eps -> num a partir del cual empieza a tener en cuenta. El eps
-   depende del numero al rededor del cual estamos
-   1+(eps(1)) = 1.000000000000002
-   1+(eps(1)/10) = 1 no tiene en cuenta el incremento
+*** para guardar figura save figure
+    figure(2);subplot(2,1,1);plot(x,sol_num);title('Solucion final');print -dpng folder/fig.png
+*** sprintf y ademas save figure
+    de esta forma generamos un string y ese mismo nombre lo indicamos como nombre para guardar la figura
+    % variables
+    ee = 0.01;
+    grPol = 2;
+    
+    t3 = sprintf('Convergencia Error - e = %d - Polinomio P_%d(x)',ee,grPol);
+    figure(1);
+    title(t3)
+    print(fullfile('Figs',[t3,'.png']),'-dpng')
+*** plotear titulos con nombre y variables
+*** plotear text y lineas dentro de la grafica
+    figure(5)
+    x = linspace(0,3);
+    y =@(a) a.^2.*sin(a);
+    plot(x,y(x))
+    line([2,2],[0,y(2)])
+    
+    str = '$$ \int_{0}^{2} x^2\sin(x) dx $$';
+    text(1.1,0.5,str,'Interpreter','latex')
+*** script p plotear lineas de ejes 
+    xL = xlim;
+    yL = ylim;
+    line([0 0], yL);  % y-axis
+    line(xL, [0 0]);  % x-axis
+*** otra forma de plotear lineas de ejes
+    line([0 0], [-4 4]);  % y-axis
+    line([-4 4], [0 0]);  % x-axis
+**** sprintf
+     sprintf-> se usa p crear texto a travez de variables
+
+     grPol=2;
+     oo=sprintf('Solucion EDO - Polinomio P_%d(x)\n',grPol);
+     figure();title(oo)
+**** vieja escuela
+     grPol=2;
+     figure();title(['Solucion EDO - Polinomio P_',num2str(grPol),'(x)'])
+   
+** fprint,sprint, disp
+*** disp
+    para poner numeros y strings
+    e = 3;
+    p=num2str(e);
+    disp(['funcion base',p,'seg'])
+*** fprintf
+**** fprintf
+
+    Utilice fprintf para mostrar directamente el texto sin crear una 
+    variable. Sin embargo, para finalizar la visualización correctamente,
+    debe finalizar el texto con el metacarácter de nueva línea (\n).
+
+    name = 'Aldo Pedro';   
+    age = 71;
+    fprintf('%s will be %d this year.\n',name,age); 
+    Alice will be 12 this year.
+
+    %s= string | %d = entero 
+**** como escribir symbolic con fprintf
+    f = @(x) cos(pi*x/2)
+    f_sym = sym(f);  % pasamo de function handle a symbolic
+    fprintf('El resultado es f en symbolic,\n%s \n', char(pretty(f_sym)))%escribimos simbolic
+**** ejem generico
+     f = @(x) cos(pi*x/2)
+     x0 = 0;xf = 1;
+     f_sym = sym(f);
+     y_sym = int(f_sym)
+     fprintf('**Integral Symbolic\n%s\n**intervalo:\nx0 = %d \nXf = %d \n\n',char(pretty((y_sym))),x0,xf)
+
+*** sprintf
+    Utilice sprintf para crear texto pero se muestra con disp.
+    
+    name = 'Alice';   
+    age = 12;
+    X = sprintf('%s will be %d this year.',name,age);
+    disp(X)
+    Alice will be 12 this year.
+** handle function
+   es un puntero a una funcion, se usa para pasar una funcion como argumento de otra funcion. se usa para optimizar. 
+   ej:
+***  alternativa
+     f = @(x) x.^2   % hacerla tipo inline
+***  alternativa
+     function y = computeSquare(x)
+     y = x.^2;
+     end
+     %(en el main) Create a handle and call the function to compute the square of four.
+     
+     f = @computeSquare;
+     a = 4;
+     b = f(a)
+*** transform funtion_handle to symbolic
+     si no toma la funcion como sym hay que transformarla de function_handle a sym
+     y=@(x,t) x^2+3*x-t
+     p=sym(y)
+
+** gradient
+   Calculate the gradient of sampled data or a function.  If M is a
+   vector, calculate the one-dimensional gradient of M.
+   [DX, DY] = gradient (M)' calculates the one dimensional gradient
+   for X and Y direction if M is a matrix
+   example
+   [X,Y] = meshgrid(-2:.2:2);
+   Z = X.*exp((-X.^2 - Y.^2));
+   [DX,DY] = gradient(Z,.2,.2);
+   figure();contourf(X,Y,Z);hold on;quiver(X,Y,DX,DY);colormap jet
+   figure();contour(X,Y,Z);hold on;quiver(X,Y,DX,DY);colormap jet
+   hold on
+   quiver(X,Y,DX,DY)
+   grid off
+   hold off
+  
+** linsolve
+   resuelve un sistema lineal A*x = b -> x = A\b
+   si no se aclara nada, octave recorre la matriz y optimiza la inv, 
+   sino con OPTS, se le indica el tipo de matriz y optimiza la inversa
+   R = # de condicion de A
+
+   OPTS: 
+   LT  ->  A is lower triangular
+   UT  ->  A is upper triangular
+   SYM ->   A is symmetric or complex Hermitian (currently makes no
+   difference)
+   UHESS  -> A is upper Hessenberg (currently makes no difference)
+   POSDEF -> A is positive definite
+   RECT   -> A is general rectangular (currently makes no difference)
+   TRANSA -> Solve 'A'*x = b' by 'transpose (A) \ b'
+
+   [X, R] = linsolve (A, b, OPTS)
+
+** linspace
+   genera una sucecion entre x0 y xf de N ptos
+   p=linspace(0,1,10)
+** log
+   log es la funcion de logaritm
+   log(x)-> logaritmo natural o neperiano
+   log10(x)-> log en base 10
+   log2(x) -> log base 2
+   log1p(x)-> Compute log(1+x) accurately for small values of x
+** magic() 
+   es una logica que no se repite y la suma de las filas y col 
+   es la misma
+
+** mesgrid
+   genera una malla apartir de dos vectores
+   x=linespace(-1,1,20)
+   [X,Y]meshgrid(x,x)
+** matriz sparse
+   full(k) % me genera una matriz full a partir de una sparse
+*** rala
+    para ver que tan rala es una matriz sparce
+    S = matriz sparse, rho = % de cuan rala es la matrix
+    rho = nnz(S)/prod(size(S))
+** matrix_type
+** nnz 
+   te da la cant de los elem no ceros de la matrix
+   nnz(S)
+** pause
+   suspend the executin of the program for N seconds
+   pause(0.01)
+** path
+*** load path
+    cargamos el path donde se ubican las funciones
+    addpath('~/Documents/CIMEC/Cursos/FEM/pract/funciones_auxiliares/')
+** quiver3
+   % plotea vectores en 3D, 
+   example
+   [x, y, z] = peaks (25);
+   surf (x, y, z);
+   hold on;
+   [u, v, w] = surfnorm (x, y, z / 10);
+   h = quiver3 (x, y, z, u, v, w);
+   set (h, "maxheadsize", 0.33);
+** quiver
+   % plotea vectores en 2D
+   quiver(x1(1),x1(2),x12_new(1),x12_new(2),0,'m*')
+   % hay que poner ,'autoscale','off') o 0 para que no escale el vector,
+   o sino '*' para que en lugar de una flecha ponga un asterisco
+   % example:
+   [x, y] = meshgrid (1:2:20);
+   h = quiver (x, y, sin (2*pi*x/10), sin (2*pi*y/10));
+   set (h, "maxheadsize", 0.33);
+   
+** spy
+   te grafica los elem no nulos de la matriz de la matriz
+   spy(A)
+** surfnorm
+   %Find the vectors normal to a meshgridded surface. The meshed 
+   gridded surface is defined by X, Y, and Z.
+
+   %example
+   figure()
+   [X,Y] = meshgrid(-2:.2:2);
+   Z = X.*exp((-X.^2 - Y.^2));
+   [U,V,W] = surfnorm(X,Y,Z);  % importante !!
+   quiver3(X,Y,Z,U,V,W,0.5);
+   hold on
+   surf(X,Y,Z);
+   colormap hsv
+   view(-35,45)
+   axis ([-2 2 -1 1 -.6 .6])
+   hold off
+** syms
+   symbolic, see algo how to change from symbolic to matlab expression
+*** diff
+    deriva funcion
+    d_phi1=diff(phi1,x);    %d_phi1/dx
+*** int
+    integra fiuncion, tanto definida como indefinida
+**** integral indef en funcion de x
+     y=@(x) x^2+3*x-t
+     A11 = int(y,x)
+     si no toma la funcion como sym hay que transformarla de function_handle a sym
+     y=@(x) x^2+3*x-t
+     p=sym(y)
+**** integral definida
+     y=@(x) x^2+3*x-t
+     A11 = int(y,0,2);
+**** integrales por parte
+     syms u(x) v(x)
+     F = int(u*diff(v))
+     g = integrateByParts(F,diff(u))
+
+     link -> https://www.mathworks.com/help/symbolic/integratebyparts.html
+     
+*** pretty 
+    visualiza mejor la ecuaci'on
+    pretty(A)
+*** subs
+    substituye valores
+    ej:
+    phi1=subs(subs(subs(phi1,x1,0),x2,h),x3,0);     % phi1
+    % no es necesario hacer uno x uno, se le puede pasar una celda de los valores a substituir
+
+    A = [1 x1 y1 x1^2 x1*y1 y1^2;
+         1 x2 y2 x2^2 x2*y2 y2^2;
+	 1 x3 y3 x3^2 x3*y3 y3^2;
+	 1 x4 y4 x4^2 x4*y4 y4^2;
+	 1 x5 y5 x5^2 x5*y5 y5^2;
+	 1 x6 y6 x6^2 x6*y6 y6^2];
+	 
+     % matrix evaluada en los nodos del triangulo master
+     ANum = subs(A,{x1,y1,x2,y2,x3,y3,x4,y4,x5,y5,x6,y6},{0,0,1,0,0,1,0.5,0,0.5,0.5,0,0.5})
+    
+*** simplify
+    simplifica ecuacion usando las reglas de maple
+    phi3=simplify(phi3);    
+    % --------------------------------
+    simplify
+    y = sin(x)^2+cos(x)^2
+*** simple
+    simple
+    simplifica a la opci'on m'as corta
+    % medio similar a simplify
+*** factor
+    factoriza una expresion en symbolic
+    factor(ANum(1)) factoriza en simbolico
+    y = 2*(x+3)^2/(x^2+6*x+9)
+    y1 = factor(y)
+    % --------------------------------
+    syms x
+    p = expand((x-5)*(x+5))
+    y = factor(p)
+**** ej
+     syms x
+     y = 2*(x+3)^2/(x^2+6*x+9)
+     p = factor(y)
+     ---------------------------------------------
+     % otro ejemplo
+     syms x
+     f = x^2-1
+     p=factor(f)
+     pretty(p)
+     pp=matlabFunction(p) % pasamos la expresi'on symbolic a expresi'on de funci'on
+     pp(2)  % evaluamos la funci'on en x=2
+     % notar que se paso de una clase simb'olica a una funcion y luego se evaluo
+*** expand
+    multiplica todas las operaciones de la expresion
+    syms x
+    expand((x-5)*(x+5))
+
+*** collect
+    agrupa t'erminos similares
+    S=2*(x+3)^2+x^2+6*x+9
+    collect(S)
+*** numden
+    encuentra el numerador y el denominador de una expresi'on , esta eq no es v'alida para ecuaciones
+    syms x
+    S = (x+5)/(x-5)
+    [num,dem]=numden(S)
+*** findsym
+    encuentra y muestra las variables symbolicas en una ecuacion
+    syms x
+    t=4;
+    p = x^2+t+2*x;
+    findsym(p)
+*** solve
+    resuelve eq p simbolico
+*** matlabFunction
+    pasa de simbolico a handle funcion, es decir a partir de una funcion
+    simbolica, hace un puntero la funcion y desp se maneja como puntero a funcion
+**** ej 
+    syms h
+    A_sym = [h;1/h;h^2]
+    f = matlabFunction(A_sym);
+    dx = 0.5;
+    A_num = f(dx)
+    whos A_sym
+    whos A_num
+*** sym2double
+    
+** symrc
+   Return the symmetric reverse Cuthill-McKee permutation of S.  P is
+   a permutation vector such that 'S(P, P)' tends to have its diagonal
+   elements closer to the diagonal than S.  This is a good preordering
+   for LU or Cholesky factorization of matrices that come from "long,
+   skinny" problems
+   
+** video
+   %% Animaciones en MatLab
+   clear
+   clc
+   close all
+   
+   %% Datos con los que voy a trabajar (en este caso a modo de ejemplo se va a animar una particula siguiendo una trayectoria helicoidal)
+   
+   t=linspace(0, 2*pi, 100);
+   x=5*cos(t);
+   y=2*sin(t);
+   z=t;
+   
+   %% Dibujo la informacion
+   
+   figh=figure;
+   
+   for i=1:length(t)
+    % Al principi ''limpio'' el grafico
+    clf % Clear the Figure
+    
+    % Obtengo la ubicacion punto a punto de la particula
+    t_i=t(i);
+    x_i=x(i);
+    y_i=y(i);
+    z_i=z(i);
+    
+    % ploteo la ubicacion de la particula
+    plot3(x_i,y_i,z_i, 'go', 'LineWidth', 3, 'MarkerSize', 10)
+    
+    % A su vez, ploteo la trayectoria completa
+    hold on
+    plot3(x,y,z,'b-', 'LineWidth',2)
+    
+    % Detalles del grafico
+    grid on
+    xlabel('x')
+    ylabel('y')
+    zlabel('z')
+    title(['Particula en el instante t= ', num2str(t_i),' segundos'])
+    % view ([30 30])
+    view ([30+20*t_i 30]) % esto haria rotar el video a medida que transcurre el tiempo
+    
+    % MatLab es 'inteligente' de cierta manera y ahorra memoria ploteando
+    % solamente la ultima posicion, para hacer la animacion debemos
+    % 'forzar' a MatLab a dibujar ploteo por ploteo
+    
+    %drawnow % con esta opcion MatLab dibuja lo mas rapido posible
+    %pause(0.1) % pausa el scrip por 'x' cantidad de segundos haciendo que MatLab tenga que plotear cada fotograma
+    
+    Video(i)=getframe(figh, [10 10 520 400]); % getframe lo que hace es ir guardando cada fotograma, en este caso se guarda en una variable llamada 'Video' 520x400 resolucion en pexil 10 10 la dist eje del fig a su vez cuando yo hago rotar la animacion, getframe selecciona automaticamente cierta cantidad de pixeles en cada figura, esto genera que, a la hora de hacer el archivo del video, se produzca un error, dado que las imagenes no coinciden en tama�o, por eso le especificamos: los dos primeros numeros indican cuan alejado estoy del origen izquierdo inferior, y los dos ultimos numero especifica cuantos por cuantos pixeles queiro tomar. figh en este caso es la figura a la que le estoy especificando la cantidad de pixeles qu quiero.
+    end
+    
+    %% Guardar el video
+    
+    %VideoFinal= VideoWriter('Particula_siguiendo_trayectoria','MPEG-4'); % Esto es un objeto que me va a crear el archivo del video, por default guarda los archivos de video en .avi
+    VideoFinal= VideoWriter('Particula_siguiendo_trayectoria'); % Esto es un objeto que me va a crear el archivo del video, por default guarda los archivos de video en .avi
+    VideoFinal.FrameRate= 20; % Digo que quiero 20fps
+    
+    % Abro el objeto, guardo el video y cierro el objeto
+    open(VideoFinal); % abro el objeto
+    writeVideo(VideoFinal,Video); % Al objeto le paso la informacion necesaria para que guarde el video
+    close(VideoFinal);% cierro el objeto
+** workspace 
+   entorno de variables 
+*** save
+    workspace.mat
+*** load
+    load name.mat
+*** transfer workspace octave2matlab
+    in octave, .mat is a binary file at all, it is in fact a text file format that Octave developed for itself. por lo tanto cuando lo queremos abrir en matlab paratalea xq no es un archivo binario. para eso en octave hay que indicarle que lo guarde como binario, es se hace:
+    save -mat7-binary 'workspace_octave.mat'
+    Si todo esta OK, funciona, pero a veces patalea con las funciones handles, por lo tanto hay que guardar el workspace, y si tira error, eliminar las variables problematicas una x una con clear name.
+** whos
+   para saber cuanto ocupa en memoria y adem'as que tipo de variable es
+   k=zeros(3)
+   whos k
 
 * prog
 ** ah
