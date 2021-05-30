@@ -1,5 +1,16 @@
 * funciones
   clear all;close all;clc
+** encabezado prog
+   addpath('~/Documents/CIMEC/Cursos/FEM/pract/funciones_auxiliares/')
+   tStart = tic; % son timer de multivariables, para cuando hay muchos timers en el prog
+
+   time = toc(tStart);
+   fprintf('*-----------------------------------------------*\n')
+   fprintf('\n\nFIN! - OK - time = %d[s].\n',time)
+
+   %fprintf('Resolusion: %1.8f\n',h)
+   %fprintf('Limite de iteraciones por punto: %d\n',maxiter)
+   %fprintf('Tolerancia de convergencia: %1.3f\n\n',tol)
 
 ** data manipulation - external wrinting/reading
    https://es.mathworks.com/help/matlab/matlab_external/writing-and-reading-data.html
@@ -20,6 +31,16 @@
    A  = textscan(fid,['%f',repmat(' %f',1,3)],numnp,'CommentStyle','$',...
    'CollectOutPut',true);
    A  = A{1};
+
+**** fscanf
+     clear all;clc;close all
+     fileID = fopen('CDvsAlpha.txt','r') %creo que tiene que estar sin comentarios
+     formatSpec = '%f %f';
+     sizeA = [2 Inf]; % lo escribe en vector fila, desp hacer transpuesta
+     A = fscanf(fileID,formatSpec,sizeA)
+     fclose(fileID)
+*** csvread
+    csvread() para leer datos en octave
 ** eps
    eps -> num a partir del cual empieza a tener en cuenta. El eps
    depende del numero alrededor del cual estamos
@@ -130,6 +151,38 @@
     figure(1);
     title(t3)
     print(fullfile('Figs',[t3,'.png']),'-dpng')
+*** legend
+    legendas
+    legend('ERROR','Converg LINEAL','Converg CUAD','location','SouthEas')
+
+    legendas afuera de la graf
+    legend('ERROR','Converg LINEAL','Converg CUAD','location','SouthEastOutside')
+*** plot2Dfrom3D
+    como hacer una proyecci'on 2D a partir de una graf 3D
+**** example
+% Se ejemplifica como obtener un proyecciones 2D a partir de un plot3D
+%
+clear all;clc;close all
+y=0:0.1:80;
+x = y/50.*cos(y);
+z = y/50.*sin(y);
+plot3(x,y,z, 'LineWidth', 2)
+grid on
+xlabel('x')
+ylabel('y')
+zlabel('z')
+ylim([0, 100])
+xlim([-2 2]);
+zlim([-2 2]);
+
+% aca obtenemos la proyeccion de la curva en los distintos planos
+if 1
+  hold on
+  plot3(x, 100*ones(size(y)), z, 'LineWidth', 2); % project in x-z axis at y=100
+  plot3(2*ones(size(x)), y, z, 'LineWidth', 2); % project in y-z axis at x=2
+  plot3(x, y, -2*ones(size(x)), 'LineWidth', 2); % project in y-z axis at z=-2
+end
+
 *** plotear titulos con nombre y variables
 *** plotear text y lineas dentro de la grafica
     figure(5)
@@ -197,11 +250,37 @@
     disp(X)
     Alice will be 12 this year.
 ** handle function
-   es un puntero a una funcion, se usa para pasar una funcion como argumento de otra funcion. se usa para optimizar. 
-   ej:
-***  alternativa
+   es un puntero a una funcion, tmb se la conoce como funci'on an'onima
+   se usa para pasar una funcion como argumento de otra funcion.
+*** descripcion
+    funci\'on del tipo functionHandle, es decir una funci\'on an\'onima. Una funci\'on
+    an\'onima es una funci\'on que no se encuentra almacenada en el archivo de programa, 
+    pero est\'a asociada a un tipo de variable denominado \textit{function handle}. Las 
+    funciones an\'onimas aceptan m\'ultiples argumentos de entrada, pero devuelven un solo
+    argumento de salida. La ventaja de este tipo de funciones es que no hay que realizar 
+    ni mantener un archivo que solo requiere pocas sentencias. Esta es una de las principales
+    ventajas de las funciones inc\'ognito, pero adem\'as existen otros usos, como ser:
+    
+    function handle en matlab
+    Se designan con el operador $@$ y entre par\'entesis los argumentos de entrada, luego 
+    de estos se coloca la ley de la funci\'on.
+
+    Este tipo de funciones se usa para:
+    - Pasar un funci\'on como argumento de otra funci\'on, lo que se conoce como "function-function"
+    -  Para regresar a un men\'u en UI. Specifying callback functions (for example, a callback
+    that responds to a UI event or interacts with data acquisition hardware).
+    - Crear funciones an\'onimas, es decir crear funciones a manipuladores de funciones definidas
+    inline en lugas del programa
+    - Llama a funciones locales por afuera del main
+
+    Las funciones an\'onimas "function Handle" se almacenan en el path absoluto, por lo que
+    puedes invocar a la funci\'on desde cualquier ubicaci\'on. Es por esto que no se debe inidcar
+    donde se encuentra ubicada la funci\'on cuando se crea la misma, sino solo con el nombre basta.
+
+*** ej:
+**** alternativa
      f = @(x) x.^2   % hacerla tipo inline
-***  alternativa
+**** alternativa
      function y = computeSquare(x)
      y = x.^2;
      end
@@ -210,11 +289,17 @@
      f = @computeSquare;
      a = 4;
      b = f(a)
-*** transform funtion_handle to symbolic
+**** transform funtion_handle to symbolic
      si no toma la funcion como sym hay que transformarla de function_handle a sym
      y=@(x,t) x^2+3*x-t
      p=sym(y)
 
+** hdf5
+   Hierarchical Data Format, is a set (struct) of file formats designed to store large amount of data
+*** open hdf5
+    file = hdf5info('Data_vacio.hdf5');
+    inertial_coord_vacio = hdf5read(file.GroupHierarchy.Datasets(4));
+    time = hdf5read(file.GroupHierarchy.Datasets(6));
 ** gradient
    Calculate the gradient of sampled data or a function.  If M is a
    vector, calculate the one-dimensional gradient of M.
@@ -231,8 +316,15 @@
    grid off
    hold off
   
+** mlderiv
+   es la barra invertida x=A\b, ver tmb linsolve
+   Resuelve un sistema de ecuaciones lineales, tiene un algoritmo para optimizar
+   dependiendo de como es la matriz.
+   Por ejemplo, se fija si es diagonal, si no es triangular usa solver de bandas,
+   puede usar LU, Choleski, hessenberg. Ver algoritmo de entradas en matlab!!
 ** linsolve
-   resuelve un sistema lineal A*x = b -> x = A\b
+   ver tmb  la barra invertida es "mlderiv"
+   resuelve un sistema lineal A*x = b -> x = A\b,
    si no se aclara nada, octave recorre la matriz y optimiza la inv, 
    sino con OPTS, se le indica el tipo de matriz y optimiza la inversa
    R = # de condicion de A
@@ -248,7 +340,7 @@
    TRANSA -> Solve 'A'*x = b' by 'transpose (A) \ b'
 
    [X, R] = linsolve (A, b, OPTS)
-
+   
 ** linspace
    genera una sucecion entre x0 y xf de N ptos
    p=linspace(0,1,10)
@@ -276,6 +368,35 @@
 ** nnz 
    te da la cant de los elem no ceros de la matrix
    nnz(S)
+** objetos moviendose
+*** hgtransform
+    Create transform object
+*** makehgtform
+    creates transform matrices for translation, scaling, and rotation of graphics objects
+**** ej
+     ax = axes('XLim',[-1.5 1.5],'YLim',[-1.5 1.5],'ZLim',[-1.5 1.5]);
+     view(3)
+     grid on;
+     t = hgtransform('Parent', ax);
+     [x,y,z] = cylinder([.2 0]);
+     h(1) = surface(x,y,z,'FaceColor','white');
+     h(2) = surface(x,y,-z,'FaceColor','white');
+     h(3) = surface(z,x,y,'FaceColor','white');
+     h(4) = surface(-z,x,y,'FaceColor','white');
+     h(5) = surface(y,z,x,'FaceColor','white');
+     h(6) = surface(y,-z,x,'FaceColor','white');
+     set(h,'Parent',t)
+     for r = 1:.1:2*pi
+     % Z-axis rotation matrix
+     Rz = makehgtform('zrotate',r);
+     % Scaling matrix
+     Sxy = makehgtform('scale',r/4);
+     % Concatenate the transforms and
+     % set the transform Matrix property
+     set(t,'Matrix',Rz*Sxy)
+     pause(0.1)
+     drawnow
+     end
 ** pause
    suspend the executin of the program for N seconds
    pause(0.01)
@@ -415,11 +536,23 @@
     t=4;
     p = x^2+t+2*x;
     findsym(p)
+*** sym2poly
+    transforma un simbolic en polinomio, x ejem p sacar raiz
+**** ej
+     % para sacar el pol carac de la siguiente matriz (autovalores)
+     syms lambda
+     A=[4/5 -3/5 0;3/5 4/5 0;1 2 2]
+     pp=A-lambda*eye(3)
+     ll = det(pp); % pol caract
+     pol=sym2poly(ll)
+     roots(pol)
+     % otra forma de sacar raiz
+     solve(ll,0)
 *** solve
     resuelve eq p simbolico
 *** matlabFunction
     pasa de simbolico a handle funcion, es decir a partir de una funcion
-    simbolica, hace un puntero la funcion y desp se maneja como puntero a funcion
+    simbolica, hace un puntero la funcion, tmb crea una funci'on an'onima
 **** ej 
     syms h
     A_sym = [h;1/h;h^2]
@@ -429,7 +562,12 @@
     whos A_sym
     whos A_num
 *** sym2double
-    
+    para transformar un symbolic en double hay:
+**** ej
+     syms x
+     f = x.^2
+     fs = subs(f,x,2)
+     f2d = double(fs)    
 ** symrc
    Return the symmetric reverse Cuthill-McKee permutation of S.  P is
    a permutation vector such that 'S(P, P)' tends to have its diagonal
