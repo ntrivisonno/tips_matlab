@@ -12,6 +12,14 @@
    %fprintf('Limite de iteraciones por punto: %d\n',maxiter)
    %fprintf('Tolerancia de convergencia: %1.3f\n\n',tol)
 
+** csv
+   coma-separate-value
+*** csvwrite
+    para guardar archivos csv 'coma-separate-value'
+    csvwrite ('testingcscwrite.dat', data)
+*** dlmread csvread
+    para leer archivos csv 'coma-separate-value'
+    x = dlmread('testingcscwrite.dat')
 ** data manipulation - external wrinting/reading
    https://es.mathworks.com/help/matlab/matlab_external/writing-and-reading-data.html
 *** escribir datos
@@ -165,7 +173,7 @@
      print(fullfile('Figures',[figname_Cdd2,'.png']),'-dpng')
 *** legend
     legendas
-    legend('ERROR','Converg LINEAL','Converg CUAD','location','SouthEas')
+    legend('ERROR','Converg LINEAL','Converg CUAD','location','SouthEast')
 
     legendas afuera de la graf
     legend('ERROR','Converg LINEAL','Converg CUAD','location','SouthEastOutside')
@@ -357,6 +365,7 @@ end
    genera una sucecion entre x0 y xf de N ptos
    p=linspace(0,1,10)
 ** load files, leer data inputs
+*** carga de txt
    % Colocar nombre del caso a analziar el CD
    caso = 'B06_alpha80';
    % maquinaria para cargar datos en funcion del nombre del caso
@@ -368,8 +377,12 @@ end
    mach_cd = data(:,2);
    alfa_cd = data(:,3);
    delta2 = data(:,5);
-   Cd = data(:,6);
+   CD = data(:,6);
 
+*** carga de hdf5
+    load -f /home/zeeburg/Documents/CIMEC/investigaciones222/Data_wingnut_Dzhanibekov_effect.hdf5
+    w = reshape(Body_ang_vel,3,[])'; 
+    % con la variable 'whos' se todas las variables en el workspace
 ** log
    log es la funcion de logaritm
    log(x)-> logaritmo natural o neperiano
