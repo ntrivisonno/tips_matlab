@@ -1,6 +1,7 @@
 * funciones
-  clear all;close all;clc
 ** encabezado prog
+   clear all;close all;clc
+   warning('off','all'); %disable all warning
    addpath('~/Documents/CIMEC/Cursos/FEM/pract/funciones_auxiliares/')
    tStart = tic; % son timer de multivariables, para cuando hay muchos timers en el prog
 
@@ -18,7 +19,7 @@
     para guardar archivos csv 'coma-separate-value'
     csvwrite ('testingcscwrite.dat', data)
 *** dlmread csvread
-    para leer archivos csv 'coma-separate-value'
+    para leer archivos csv 'coma-separate-value', ver si es matlab u octave
     x = dlmread('testingcscwrite.dat')
 ** data manipulation - external wrinting/reading
    https://es.mathworks.com/help/matlab/matlab_external/writing-and-reading-data.html
@@ -49,6 +50,7 @@
      fclose(fileID)
 *** csvread
     csvread() para leer datos en octave
+    ver arriba en csv
 ** eps
    eps -> num a partir del cual empieza a tener en cuenta. El eps
    depende del numero alrededor del cual estamos
@@ -315,7 +317,7 @@ end
      p=sym(y)
 
 ** hdf5
-   Hierarchical Data Format, is a set (struct) of file formats designed to store large amount of data
+   Hierarchical Data Format (formato de datos jerárquico), is a set (struct) of file formats designed to store large amount of data
 *** open hdf5
     file = hdf5info('Data_vacio.hdf5');
     inertial_coord_vacio = hdf5read(file.GroupHierarchy.Datasets(4));
@@ -436,6 +438,22 @@ end
      pause(0.1)
      drawnow
      end
+** ordenamiento vectores/matrices
+*** sort
+    devuelve el arreglo ordenado de forma descendente
+**** ej
+     % reordena una matriz en forma descendente
+     X = [10 3 6  8;
+     12 5 9  2;
+     66 4 7 11];
+
+     [rows, columns] = size(X)
+     sorted_X = reshape(sort(X(:), 'descend'), [columns, rows])'
+*** unique
+    unique, ordena de forma ascendente un vector que tiene valores repetidos
+**** ej
+   a = [9 2 9 5];
+   b = unique(a)
 ** pause
    suspend the executin of the program for N seconds
    pause(0.01)
