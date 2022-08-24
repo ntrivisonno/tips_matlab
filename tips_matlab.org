@@ -1,7 +1,7 @@
 * funciones
 ** encabezado prog
    clear all;close all;clc
-   warning('off','all'); %disable all warning
+   warning('off','all'); % disable all warning
    addpath('~/Documents/CIMEC/Cursos/FEM/pract/funciones_auxiliares/')
    tStart = tic; % son timer de multivariables, para cuando hay muchos timers en el prog
 
