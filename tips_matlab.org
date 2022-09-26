@@ -149,8 +149,10 @@
      colormap(jet(10)) %hay diferentes gamas de colores (winter, summer, jet, etc) y el '10' representa cuantos bloques de colores quiero
      colorbar
      
-*** para guardar figura save figure
+*** para guardar figura save figure png
     figure(2);subplot(2,1,1);plot(x,sol_num);title('Solucion final');print -dpng folder/fig.png
+*** para guardar figura save figure pdf
+    print -dpdf fig.pdf
 *** sprintf y ademas save figure
 **** ejemp seba
     de esta forma generamos un string y ese mismo nombre lo indicamos como nombre para guardar la figura
@@ -271,6 +273,19 @@ end
     X = sprintf('%s will be %d this year.',name,age);
     disp(X)
     Alice will be 12 this year.
+**** fprintf simbolo %
+     colocar el simbolo % tiene la complejidad ya que es un caracter que
+     se usa para especificar el tipo de variable a imprimir, por lo cual
+     si se desea usar como texto, hay dos posibilidades. 
+     Incorporarlo como cadena de caracteres %s, '%' o como codigo ASCII
+     %c,'%'
+***** ej
+      cl_num = 0.5682; cl_ref = 0.569;
+      err_cl = ((cl_ref-cl_num)/cl_ref)*100;
+      fprintf('\nCL=%d, Err relativo=%d%s.\n',cl_num,err_cl,'%')
+      % otra alternativa con codigo ASCII
+      fprintf('Otra alternativa con codigo ASCII\n')
+      fprintf('CL=%d, Err relativo=%d%c.\n',cl_num,err_cl,'%')
 ** handle function
    es un puntero a una funcion, tmb se la conoce como funci'on an'onima
    se usa para pasar una funcion como argumento de otra funcion.
