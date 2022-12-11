@@ -13,6 +13,15 @@
    %fprintf('Limite de iteraciones por punto: %d\n',maxiter)
    %fprintf('Tolerancia de convergencia: %1.3f\n\n',tol)
 
+** cells
+   son arreglos que almacen datos de distinto tipo, se definen con {}
+*** example
+    a = [1 2 3;4 5 6]
+    s = 'el sapo pepe'
+    t = [1:4]
+    
+    p = {a,s,t}
+   
 ** csv
    coma-separate-value
 *** csvwrite
@@ -647,6 +656,24 @@ end
    for LU or Cholesky factorization of matrices that come from "long,
    skinny" problems
    
+** struct
+   son arreglos de multiples variables (celdas) y de multiples dimensiones. B'asicamente es una celda de multiples dimensiones. Se identifican 
+   con campos (fields)
+   
+   Se accede con el nombre de la estructura, () la ubicaci'on y por ultimo el campo
+   estructure_name(location).field
+*** example
+    a = [1 2 3;4 5 6]
+    s = 'el sapo pepe'
+    t = [1:4]
+
+    est.nombre = s
+    est.vector = a
+    est.tiempo = t
+    % le incorporamos un nuevo elemento al campo nombre
+    est(2).nombre = 'balto el rope'
+    
+    est   
 ** video
    %% Animaciones en MatLab
    clear
