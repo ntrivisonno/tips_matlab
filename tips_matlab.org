@@ -674,6 +674,30 @@ end
     est(2).nombre = 'balto el rope'
     
     est   
+** type
+   en octave no existe type(var) para ver el tipo de objeto, hay que ver su 
+   clase.
+
+*** ej
+a = 3; %int
+b = 3; %int
+p = (a==b);%que tipo de variable es p??
+class(p) % indica el tipo de dato
+%tmb se puede usar la funcion strcmp (string compare, para ver si class es un
+tipo logico)
+if strcmp(class(o), 'logical')
+  disp('o es un booleano')
+else
+  disp('o no es un booleano')
+end
+
+% o sino usar la funcion islogical
+if islogical(o)
+  disp('o es un booleano')
+else
+  disp('o no es un booleano')
+end
+
 ** video
    %% Animaciones en MatLab
    clear
